@@ -1,4 +1,4 @@
-# Code Your Future Badges :name_badge:
+# Code Your Future Badges :name_badge: ![Code Your Future Logo](/server/assets/cyf_brand.png)
 
 CFY emblems is an API that seeks to bring together all the people who are part of Code Your Future worldwide: earth_africa :: earth_americas :: earth_asia:
 
