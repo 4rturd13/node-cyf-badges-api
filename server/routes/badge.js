@@ -19,7 +19,7 @@ app.get(
 
         Badge.find(
             { state: true },
-            'name lastname username city country email role state google github facebook img'
+            'name username city country email role state google github facebook img'
         )
             .skip(from)
             .limit(limit)
@@ -32,15 +32,17 @@ app.get(
                 }
 
                 Badge.countDocuments({ state: true }, (err, count) => {
+                    if (err) {
+                        return res.status(400).json({
+                            ok: false,
+                            err
+                        })
+                    }
+
                     res.json({
                         ok: true,
                         badges,
                         quantity: count
-                    })
-
-                    res.json({
-                        ok: false,
-                        err
                     })
                 })
             })
@@ -54,7 +56,6 @@ app.post(
 
         let badge = new Badge({
             name: body.name,
-            lastname: body.lastname,
             username: body.username,
             city: body.city,
             country: body.country,
@@ -79,76 +80,80 @@ app.post(
     }
 )
 
-app.put('/badge/:id', [verifyToken, verifyAdmin_Role], function(req, res) {
-    let id = req.params.id
-    let body = _.pick(req.body, [
-        'name',
-        'lastname',
-        'username',
-        'city',
-        'country',
-        'email',
-        'img',
-        'role',
-        'state'
-    ])
+app.put(
+    '/badge/:id',
+    /* [verifyToken, verifyAdmin_Role], */ function(req, res) {
+        let id = req.params.id
+        let body = _.pick(req.body, [
+            'name',
+            'username',
+            'city',
+            'country',
+            'email',
+            'img',
+            'state'
+        ])
 
-    Badge.findByIdAndUpdate(
-        id,
-        body,
-        { new: true, runValidators: true },
-        (err, badgeDB) => {
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    err
+        Badge.findByIdAndUpdate(
+            id,
+            body,
+            { new: true, runValidators: true },
+            (err, badgeDB) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        err
+                    })
+                }
+
+                res.json({
+                    ok: true,
+                    badge: badgeDB
                 })
             }
-
-            res.json({
-                ok: true,
-                badge: badgeDB
-            })
-        }
-    )
-})
-
-app.delete('/badge/:id', [verifyToken, verifyAdmin_Role], function(req, res) {
-    let id = req.params.id
-
-    // Badge.findByIdAndRemove(id, (err, deletedBadge) => {
-
-    let changeState = {
-        state: false
+        )
     }
+)
 
-    Badge.findByIdAndUpdate(
-        id,
-        changeState,
-        { new: true },
-        (err, deletedBadge) => {
-            if (err) {
-                return res.status(400).json({
-                    ok: false,
-                    err
-                })
-            }
+app.delete(
+    '/badge/:id',
+    /* [verifyToken, verifyAdmin_Role], */ function(req, res) {
+        let id = req.params.id
 
-            if (!deletedBadge) {
-                return res.status(400).json({
-                    ok: false,
-                    err: {
-                        message: 'Badge not found'
-                    }
-                })
-            }
+        // Badge.findByIdAndRemove(id, (err, deletedBadge) => {
 
-            res.json({
-                ok: true,
-                badge: deletedBadge
-            })
+        let changeState = {
+            state: false
         }
-    )
-})
+
+        Badge.findByIdAndUpdate(
+            id,
+            changeState,
+            { new: true },
+            (err, deletedBadge) => {
+                if (err) {
+                    return res.status(400).json({
+                        ok: false,
+                        err
+                    })
+                }
+
+                if (!deletedBadge) {
+                    return res.status(400).json({
+                        ok: false,
+                        err: {
+                            message: 'Badge not found'
+                        }
+                    })
+                }
+
+                res.json({
+                    ok: true,
+                    badge: deletedBadge
+                })
+            }
+        )
+    }
+)
 
 module.exports = app

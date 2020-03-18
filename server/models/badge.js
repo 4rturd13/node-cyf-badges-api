@@ -13,21 +13,18 @@ let badgeSchema = new Schema({
         type: String,
         required: [true, 'Name is required']
     },
-    lastname: {
-        type: String,
-        required: [true, 'Lastname is required']
-    },
     username: {
         type: String,
-        required: [true, 'Username is required']
+        unique: true,
+        required: false
     },
     city: {
         type: String,
-        required: [true, 'City is required']
+        required: false
     },
     country: {
         type: String,
-        required: [true, 'Country is required']
+        required: false
     },
     email: {
         type: String,

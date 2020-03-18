@@ -23,8 +23,8 @@ app.put('/upload/:type/:id', function(req, res) {
         })
     }
 
-    // Type validate ==>
-    let validTypes = ['badges']
+    // Type validate
+    let validTypes = ['badge']
     if (validTypes.indexOf(type) < 0) {
         return res.status(400).json({
             ok: false,
@@ -62,7 +62,7 @@ app.put('/upload/:type/:id', function(req, res) {
             })
 
         // Here, loaded image
-        if (type === 'badges') {
+        if (type === 'badge') {
             badgeImage(id, res, fileName)
         } else {
             return res.status(500).json({
@@ -77,7 +77,7 @@ app.put('/upload/:type/:id', function(req, res) {
 function badgeImage(id, res, fileName) {
     Badge.findById(id, (err, badgeDB) => {
         if (err) {
-            deleteFile(fileName, 'badges')
+            deleteFile(fileName, 'badge')
 
             return res.status(500).json({
                 ok: false,
@@ -86,7 +86,7 @@ function badgeImage(id, res, fileName) {
         }
 
         if (!badgeDB) {
-            deleteFile(fileName, 'badges')
+            deleteFile(fileName, 'badge')
 
             return res.status(400).json({
                 ok: false,
@@ -96,11 +96,18 @@ function badgeImage(id, res, fileName) {
             })
         }
 
-        deleteFile(badgeDB.img, 'badges')
+        deleteFile(badgeDB.img, 'badge')
 
         badgeDB.img = fileName
 
         badgeDB.save((err, savedBadge) => {
+            if (err) {
+                return res.status(400).json({
+                    ok: false,
+                    err
+                })
+            }
+
             res.json({
                 ok: true,
                 badge: savedBadge,

@@ -20,7 +20,7 @@ let verifyToken = (req, res, next) => {
 }
 // Token validate <==
 
-//Admin role validate ==>
+/* //Admin role validate ==>
 let verifyAdmin_Role = (req, res, next) => {
     let badge = req.badge
 
@@ -35,7 +35,7 @@ let verifyAdmin_Role = (req, res, next) => {
         })
     }
 }
-//Admin role validate <==
+//Admin role validate <== TODO: delete it */
 
 // Token validate to img ==>
 let verifyTokenImg = (req, res, next) => {
@@ -59,6 +59,6 @@ let verifyTokenImg = (req, res, next) => {
 
 module.exports = {
     verifyToken,
-    verifyAdmin_Role,
+    /* verifyAdmin_Role, TODO: delete it*/
     verifyTokenImg
 }
